@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+  elasticsearch-1:
+    image: "bitnami/elasticsearch"
+    container_name: elasticsearch-1
+    environment:
+      - BITNAMI_DEBUG=true
+      - ELASTICSEARCH_NODE_NAME=elasticsearch-1
+      - ELASTICSEARCH_PASSWORD=password
+      - ELASTICSEARCH_ENABLE_SECURITY=true
+      - ELASTICSEARCH_ENABLE_REST_TLS=false
+      - ELASTICSEARCH_TLS_VERIFICATION_MODE=none
+      - ELASTICSEARCH_TRANSPORT_TLS_KEYSTORE_LOCATION=/opt/bitnami/elasticsearch/config/certs/ca-elastic.p12
+      - ELASTICSEARCH_TRANSPORT_TLS_TRUSTSTORE_LOCATION=/opt/bitnami/elasticsearch/config/certs/ca-elastic.p12
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elastic-data-1:/bitnami
+      - ./certs/:/opt/bitnami/elasticsearch/config/certs/
+    networks:
+      - elastic
+    restart: always
+
+  kibana:
+    image: "bitnami/kibana"
+    container_name: kibana
+    environment:
+      - KIBANA_CREATE_USER=yes
+      - KIBANA_PASSWORD=password
+      - KIBANA_ELASTICSEARCH_PASSWORD=password
+      - KIBANA_ELASTICSEARCH_URL=elasticsearch-1
+    ports:
+      - "5601:5601"
+    volumes:
+      - kibana-data:/bitnami/kibana
+    networks:
+      - elastic
+    depends_on:
+      - elasticsearch-1
+    restart: always
+
+networks:
+  elastic:
+
+volumes:
+  elastic-data-1:
+  kibana-data:

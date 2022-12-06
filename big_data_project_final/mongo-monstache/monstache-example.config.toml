@@ -1,0 +1,13 @@
+mongo-url = "mongodb://user:password@localhost:27017/?directConnection=true"
+
+elasticsearch-urls = ["http://localhost:9200"]
+elasticsearch-max-seconds = 5
+elasticsearch-max-conns = 6
+elasticsearch-user = "elastic"
+elasticsearch-password = "password"
+change-stream-namespaces = [""]
+
+resume = true
+verbose = false
+
+enable-http-server = false

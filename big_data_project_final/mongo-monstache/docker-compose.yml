@@ -1,0 +1,74 @@
+version: "3.0"
+
+volumes:
+  tut12-mongo-keys:
+  tut12-mongo-data-0:
+  tut12-mongo-data-1:
+
+networks:
+  tut12-replica-set:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.10.5.0/24
+
+services:
+
+  tut12-mongo-keys:
+    image: depop/openssl-bats
+    volumes:
+      - tut12-mongo-keys:/mongo-conf
+    command: 'bash -c "openssl rand -base64 741 > /mongo-conf/mongodb-keyfile; chmod 600 /mongo-conf/mongodb-keyfile; chown 999 /mongo-conf/mongodb-keyfile"'
+
+  # Primary
+  tut12-mongo-primary:
+    image: mongo:4.0
+    volumes:
+      - tut12-mongo-keys:/opt/keyfile
+      - tut12-mongo-data-0:/data/db
+    env_file:
+      ./mongod.env
+    ports:
+      - 27017:27017
+    command: 'mongod --smallfiles --auth --keyFile /opt/keyfile/mongodb-keyfile --replSet tut12-replica-set'
+    depends_on:
+        - tut12-mongo-keys
+    networks:
+      tut12-replica-set:
+    restart: always
+  
+  # Worker 1
+  tut12-mongo-worker-1:
+    image: mongo:4.0
+    volumes:
+      - tut12-mongo-keys:/opt/keyfile
+      - tut12-mongo-data-1:/data/db
+    env_file:
+      ./mongod.env
+    ports:
+      - 27018:27017
+    command: 'mongod --smallfiles --auth --keyFile /opt/keyfile/mongodb-keyfile --replSet tut12-replica-set'
+    depends_on:
+        - tut12-mongo-keys
+    networks:
+      tut12-replica-set:
+    restart: always
+
+  monstache:
+    image: rwynn/monstache:6.7.2
+    container_name: c-monstache
+    working_dir: /app
+    command: -f ./monstache.config.toml
+    volumes:
+      - ./monstache.config.toml:/app/monstache.config.toml
+    ports:
+      - "8080:8080"
+    networks:
+      tut12-replica-set:
+    healthcheck:
+      test: "wget -q -O - http://localhost:8080/healthz"
+      interval: 10s
+      timeout: 30s
+      retries: 300
+    restart: always
