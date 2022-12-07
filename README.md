@@ -9,6 +9,7 @@
 * Маслова Элла, гр. 3743801/12601
 
 ## 1. Введение
+![https://www.renaissancecapital.com/logos/CIAN_logo.jpg](https://www.renaissancecapital.com/logos/CIAN_logo.jpg)
 
 > Рынок аренды жилой недвижимости в России не до конца сформирован, кроме того, в этой сфере существуют проблемы в развитии арендных отношений, препятствующие формированию их устойчивой системы. Расширение сферы аренды жилой недвижимости необходимо для обеспечения экономической стабильности в стране и развития рынка аренды жилья.
 
@@ -22,6 +23,7 @@
 * Я создаю модуль MongoDB и реплицирую MongoDB
 * Модуль Monstache
 * Модуль эластичного поиска с помощью Kibana
+![https://github.com/SelivanovaSofia/big_data_project_final/blob/main/scheme_project.png](https://github.com/SelivanovaSofia/big_data_project_final/blob/main/scheme_project.png)
 
 ## 2. Основные требования для использования разработанных модулей
 
